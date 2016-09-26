@@ -58,6 +58,16 @@ public class Customer {
     }
   }
 
+  public static Customer findName(String name) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM customers WHERE name = :name";
+      Customer customer = con.createQuery(sql)
+        .addParameter("name", name)
+        .executeAndFetchFirst(Customer.class);
+      return customer;
+    }
+  }
+
   public void update(String name, String email, String address) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "UPDATE customers SET name = :name, email=:email, address=:address WHERE id = :id";

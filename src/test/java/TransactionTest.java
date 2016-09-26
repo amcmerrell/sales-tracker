@@ -40,6 +40,17 @@ public class TransactionTest {
     assertEquals(productOne.getId(), transactionOne.getProductId());
   }
 
+  // @Test
+  // public void getSalePrice_getsCorrectSalePrice_true() {
+  //   Product productOne = new Product("T-shirt", "100% cotton blend", 15);
+  //   productOne.save();
+  //   Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+  //   customerOne.save();
+  //   Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
+  //   transactionOne.save();
+  //   assertEquals(productOne.getPrice(), transactionOne.getSalePrice());
+  // }
+
   @Test
   public void save_savesIntoDatabase_true() {
     Product productOne = new Product("T-shirt", "100% cotton blend", 15);
@@ -78,32 +89,41 @@ public class TransactionTest {
     assertEquals(true, transactionOne.equals(transactionTwo));
   }
 
-  // @Test
-  // public void find_returnsProductWithSameId_true() {
-  //   Product productOne = new Product("T-shirt", "100% cotton blend", 15);
-  //   productOne.save();
-  //   Product productTwo = new Product("belt", "leather", 15);
-  //   productTwo.save();
-  //   assertEquals(Product.find(productTwo.getId()), productTwo);
-  // }
-  //
-  // @Test
-  // public void update_updatesProduct_true() {
-  //   Product productTwo = new Product("belt", "leather", 15);
-  //   productTwo.save();
-  //   productTwo.update("Suit", "wool", 200);
-  //   assertEquals("Suit", Product.find(productTwo.getId()).getName());
-  //   assertEquals("wool", Product.find(productTwo.getId()).getDescription());
-  //   assertEquals(200, Product.find(productTwo.getId()).getPrice());
-  // }
-  //
-  // @Test
-  // public void delete_deletesProduct_null() {
-  //   Product productOne = new Product("T-shirt", "100% cotton blend", 15);
-  //   productOne.save();
-  //   int deletedId = productOne.getId();
-  //   productOne.delete();
-  //   assertEquals(null, Product.find(deletedId));
-  // }
+  @Test
+  public void find_returnsProductWithSameId_true() {
+    Transaction transactionOne = new Transaction(1,2);
+    transactionOne.save();
+    Transaction transactionTwo = new Transaction(2,1);
+    transactionTwo.save();
+    assertEquals(Transaction.find(transactionTwo.getId()), transactionTwo);
+  }
 
+  @Test
+  public void delete_deletesTransaction_null() {
+    Transaction transactionOne = new Transaction(1,2);
+    transactionOne.save();
+    int deletedId = transactionOne.getId();
+    transactionOne.delete();
+    assertEquals(null, Transaction.find(deletedId));
+  }
+
+  @Test
+  public void findMonthlyTransactions_returnsCorrectTransactions_true() {
+    Transaction transactionOne = new Transaction(1,2);
+    transactionOne.save();
+    assertTrue(Transaction.findMonthlyTransactions().contains(transactionOne));
+  }
+
+  // @Test
+  // public void sumMonthlySales_returnsTotalSalesForMonth_75() {
+  //   Product productOne = new Product("T-shirt", "100% cotton blend", 15);
+  //   productOne.save();
+  //   Product productTwo = new Product("Expensive T-shirt", "fancy", 60);
+  //   productTwo.save();
+  //   Transaction transactionOne = new Transaction(productOne.getId(),2);
+  //   transactionOne.save();
+  //   Transaction transactionTwo = new Transaction(productTwo.getId(),2);
+  //   transactionTwo.save();
+  //   assertEquals(75, Transaction)
+  // }
 }

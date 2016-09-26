@@ -89,4 +89,14 @@ public class CustomerTest {
     assertEquals(null, Customer.find(deletedId));
   }
 
+  @Test
+  public void findName_findsCustomerByName_Andrew() {
+    Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+    customerOne.save();
+    Customer customerTwo = new Customer("Brian", "brian@email.com", "1111 Pearl Ave. Portland, OR 97209");
+    customerTwo.save();
+    assertEquals(customerOne, Customer.findName("Andrew"));
+  }
+
+
 }
