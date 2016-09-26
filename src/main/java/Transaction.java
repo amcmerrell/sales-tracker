@@ -19,7 +19,7 @@ public class Transaction {
   public static final long MONTH = 2592000000l;
 
 
-  public Transaction(int productId, int customerId) {
+  public Transaction(int productId, int customerId) { //add int salePrice to constructor parameters and use product.getPrice() as the argument.
     this.productId = productId;
     // salePrice = Product.find(productId).getPrice();
     this.customerId = customerId;
