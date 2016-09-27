@@ -9,7 +9,7 @@ import java.util.Date;
 public class Transaction {
   int id;
   Timestamp date;
-  // int salePrice;
+  int salePrice;
   int productId;
   int customerId;
 
@@ -19,15 +19,15 @@ public class Transaction {
   public static final long MONTH = 2592000000l;
 
 
-  public Transaction(int productId, int customerId) { //add int salePrice to constructor parameters and use product.getPrice() as the argument.
+  public Transaction(int productId, int customerId, int salePrice) {
     this.productId = productId;
-    // salePrice = Product.find(productId).getPrice();
+    this.salePrice = salePrice;
     this.customerId = customerId;
   }
 
-  // public int getSalePrice() {
-  //   return salePrice;
-  // }
+  public int getSalePrice() {
+    return salePrice;
+  }
 
   public int getCustomerId() {
     return customerId;
@@ -47,10 +47,11 @@ public class Transaction {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO transactions (customerId, productId, date) VALUES (:customerId, :productId, now())";
+      String sql = "INSERT INTO transactions (customerId, productId, date, salePrice) VALUES (:customerId, :productId, now(), :salePrice)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("customerId", this.customerId)
         .addParameter("productId", this.productId)
+        .addParameter("salePrice", this.salePrice)
         .executeUpdate()
         .getKey();
     }
@@ -113,13 +114,21 @@ public class Transaction {
     }
   }
 
-  // public static int sumMonthlySales() {
-  //   try(Connection con = DB.sql2o.open()) {
-  //     Timestamp rightNow = new Timestamp(new Date().getTime());
-  //     Timestamp prior30 = new Timestamp(rightNow.getTime() - (MONTH));
-  //     String sql = "SELECT SUM FROM products WHERE date BETWEEN '" + prior30 + "' and '" + rightNow + "'";
-  //     return con.createQuery(sql)
-  //       .executeAndFetch(Transaction.class);
-  //   }
-  // }
+  public static Integer sumMonthlySales() {
+    try(Connection con = DB.sql2o.open()) {
+      Timestamp rightNow = new Timestamp(new Date().getTime());
+      Timestamp prior30 = new Timestamp(rightNow.getTime() - (MONTH));
+      String sql = "SELECT SUM(salePrice) FROM transactions WHERE date BETWEEN '" + prior30 + "' and '" + rightNow + "'";
+      return con.createQuery(sql).executeAndFetchFirst(Integer.class);
+    }
+  }
+
+  public static Integer sumQuarterlySales() {
+    try(Connection con = DB.sql2o.open()) {
+      Timestamp rightNow = new Timestamp(new Date().getTime());
+      Timestamp priorQ = new Timestamp(rightNow.getTime() - (QUARTER));
+      String sql = "SELECT SUM(salePrice) FROM transactions WHERE date BETWEEN '" + priorQ + "' and '" + rightNow + "'";
+      return con.createQuery(sql).executeAndFetchFirst(Integer.class);
+    }
+  }
 }

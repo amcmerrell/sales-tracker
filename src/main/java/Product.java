@@ -1,17 +1,15 @@
 import org.sql2o.*;
 import java.util.List;
 
-public class Product {
-  int id;
-  String name;
-  String description;
-  int price;
+public abstract class Product {
+  public int id;
+  public String name;
+  public String description;
+  public int price;
+  public int inventory;
 
-  public Product(String name, String description, int price) {
-    this.name = name;
-    this.description = description;
-    this.price = price;
-  }
+  public static final int MAX_INVENTORY = 50;
+  public static final int MIN_INVENTORY = 0;
 
   public String getName() {
     return name;
@@ -29,6 +27,10 @@ public class Product {
     return id;
   }
 
+  public int getInventory() {
+    return inventory;
+  }
+
   public void save() {
     try(Connection con = DB.sql2o.open()) {
       String sql = "INSERT INTO products (name, description, price) VALUES (:name, :description, :price)";
@@ -41,23 +43,6 @@ public class Product {
     }
   }
 
-  public static List <Product> all() {
-    String sql = "SELECT * From products";
-    try(Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql).executeAndFetch(Product.class);
-    }
-  }
-
-  public static Product find(int id) {
-    try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM products WHERE id = :id";
-      Product product = con.createQuery(sql)
-        .addParameter("id", id)
-        .executeAndFetchFirst(Product.class);
-      return product;
-    }
-  }
-
   public void update(String name, String description, int price) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "UPDATE products SET name = :name, description=:description, price=:price WHERE id = :id";
@@ -66,6 +51,7 @@ public class Product {
         .addParameter("description", description)
         .addParameter("price", price)
         .addParameter("id", this.id)
+        .throwOnMappingFailure(false)
         .executeUpdate();
     }
   }
@@ -88,6 +74,22 @@ public class Product {
       con.createQuery(sql)
         .addParameter("id", id)
         .executeUpdate();
+    }
+  }
+
+  public void depleteInventory(){
+    if (!(inStock())){
+       throw new UnsupportedOperationException("We are out of stock");
+     } else {
+    inventory--;
+    }
+  }
+
+  public boolean inStock() {
+    if (inventory <= MIN_INVENTORY) {
+      return false;
+    } else{
+    return true;
     }
   }
 }
