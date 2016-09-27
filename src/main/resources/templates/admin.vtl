@@ -1,0 +1,24 @@
+<h2>Add a new product</h2>
+<form action='/products/new' method='post'>
+  <div class="form-group">
+    <label for="product-name">Enter a product to add:</label>
+    <input id="product-name" name="product-name" class="form-control" type="text">
+  </div>
+  <div class="form-group">
+    <label for="product-description">Enter the product description:</label>
+    <input id="product-description" name="product-description" class="form-control" type="text">
+  </div>
+  <div class="form-group">
+    <label for="product-price">Enter the price for your product:</label>
+    <input id="product-price" name="product-price" class="form-control" type="text">
+  </div>
+  <div class="form-group">
+    <label for="product-type"></label>
+    <select id='product-type' name='product-type' type='text' class="form-control">
+      <option value="hardware">Hardware</option>
+      <option value="clothing">Clothing</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn">Add product</button>
+</form>

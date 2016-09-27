@@ -7,6 +7,7 @@ public abstract class Product {
   public String description;
   public int price;
   public int inventory;
+  public String type;
 
   public static final int MAX_INVENTORY = 50;
   public static final int MIN_INVENTORY = 0;
@@ -33,11 +34,12 @@ public abstract class Product {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO products (name, description, price) VALUES (:name, :description, :price)";
+      String sql = "INSERT INTO products (name, description, price, type) VALUES (:name, :description, :price, :type)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("name", this.name)
         .addParameter("description", this.description)
         .addParameter("price", this.price)
+        .addParameter("type", this.type)
         .executeUpdate()
         .getKey();
     }
