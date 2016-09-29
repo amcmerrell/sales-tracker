@@ -48,7 +48,7 @@ public class App {
         Clothing clothingItem = new Clothing(productName, productDescription, productPrice);
         clothingItem.save();
       }
-      response.redirect("/");
+      response.redirect("/admin");
       return null;
     });
 
@@ -134,6 +134,18 @@ public class App {
         Hardware.find(Integer.parseInt(request.params(":product_id"))).delete();
       } else {
         Clothing.find(Integer.parseInt(request.params(":product_id"))).delete();
+      }
+      response.redirect("/admin");
+      return null;
+    });
+
+    post("/users/:customer_id/products/:product_id/restock", (request, response) -> {
+      int productId = Integer.parseInt(request.params("product_id"));
+      String type = Product.getType(productId);
+      if (type.equals("hardware")) {
+        Hardware.find(Integer.parseInt(request.params(":product_id"))).restock();
+      } else {
+        Clothing.find(Integer.parseInt(request.params(":product_id"))).restock();
       }
       response.redirect("/admin");
       return null;

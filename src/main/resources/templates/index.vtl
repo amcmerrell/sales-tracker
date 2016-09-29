@@ -1,7 +1,7 @@
-<h1>Department Store</h1>
+<h1 class="text-center">Department Store</h1>
 <div class="row">
   <div class="col-md-4">
-    <h2>Please create your user profile</h2>
+    <h2>Create a profile</h2>
     <form action = "/users/new" method = "post">
       <div class="form-group">
         <label for="customer-name">Enter your customer name</label>
@@ -15,10 +15,14 @@
         <label for="customer-address">enter your address</label>
         <input type= "text" name="customer-address" class="form-control" id = "customer-address" type="text">
       </div>
-      <button type="submit" class="btn">Submit Customer Profile</button>
+      <button type="submit" class="btn btn-success">Submit Customer Profile</button>
     </form>
   </div>
   <div class="col-md-4">
+    <h2 class="text-center">&mdash; OR &mdash;</h2>
+  </div>
+  <div class="col-md-4">
+    <h2>Select your profile</h2>
     <form action = "/users/login" method = "post">
       <div class="form-group">
         <select id='customer-id' name='customer-id' type='text' class="form-control">
@@ -26,7 +30,8 @@
             <option value="$customer.getId()">$customer.getName()</option>
           #end
         </select>
-      <button type="submit" class="btn">Choose Customer Profile</button>
+      </div>
+      <button type="submit" class="btn btn-primary">Choose Customer Profile</button>
     </form>
   </div>
 </div>

@@ -41,6 +41,18 @@ public abstract class Product {
     }
   }
 
+  public void restock(){
+    inventory = MAX_INVENTORY;
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "UPDATE products SET inventory = :inventory WHERE id = :id";
+      con.createQuery(sql)
+        .addParameter("inventory", inventory)
+        .addParameter("id", this.id)
+        .throwOnMappingFailure(false)
+        .executeUpdate();
+    }
+  }
+
   @Override
   public String toString(){
     return name;
