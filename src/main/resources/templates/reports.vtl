@@ -1,0 +1,47 @@
+<h2>Sales Reports</h2>
+#set ( $d = "$")
+
+<h3>Monthly Report</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+#foreach ($transaction in $monthly-transactions)
+  <tr>
+    <td>$transaction.getId()</td>
+    <td>$transaction.getFormattedDate()</td>
+    <td>$d$transaction.getSalePrice()</td>
+  </tr>
+#end
+<tr>
+  <td></td>
+  <td></td>
+  <td><h4><strong>$d$Transaction.sumMonthlySales()</strong></h4></td>
+</tr>
+</table>
+<h3>Quarterly Report</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+#foreach ($transaction in $quarterly-transactions)
+  <tr>
+    <td>$transaction.getId()</td>
+    <td>$transaction.getFormattedDate()</td>
+    <td>$d$transaction.getSalePrice()</td>
+  </tr>
+#end
+<tr>
+  <td></td>
+  <td><h4><strong>Total:</strong></h4></td>
+  <td><h4><strong>$d$Transaction.sumQuarterlySales()</strong></h4></td>
+</tr>
+</table>

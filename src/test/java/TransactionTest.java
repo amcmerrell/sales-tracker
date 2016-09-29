@@ -1,9 +1,11 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.sql2o.*;
+import java.util.Calendar;
+import java.sql.Timestamp;
 
 public class TransactionTest {
-
+  //Timestamp myTimestamp = new Timestamp(Calendar.getInstance().getTimeInMillis());
   @Rule
   public DatabaseRule database = new DatabaseRule();
 
@@ -126,4 +128,5 @@ public class TransactionTest {
     transactionTwo.save();
     assertEquals((Integer) 75, (Integer) Transaction.sumMonthlySales());
   }
+
 }

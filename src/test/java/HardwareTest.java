@@ -107,4 +107,12 @@ public class HardwareTest {
     }
     assertEquals(testHardware.getInventory(), Hardware.MIN_INVENTORY);
   }
+
+  @Test
+  public void getType_getsType(){
+    Hardware testHardware = new Hardware("wrench", "steel", 15);
+    testHardware.save();
+    String type = Product.getType(testHardware.getId());
+    assertEquals("hardware",type);
+  }
 }

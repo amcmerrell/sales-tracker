@@ -2,9 +2,7 @@ import org.sql2o.*;
 import java.util.List;
 import java.sql.Timestamp;
 import java.util.Date;
-// import java.text.DateFormat;
-// import java.text.SimpleDateFormat;
-// import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 
 public class Transaction {
   int id;
@@ -43,6 +41,11 @@ public class Transaction {
 
   public Timestamp getDate() {
     return date;
+  }
+
+  public String getFormattedDate(){
+    SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM dd yyyy hh:mm a");
+    return formatter.format(date);
   }
 
   public void save() {

@@ -23,20 +23,18 @@ public class Hardware extends Product {
   public static Hardware find(int id) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT * FROM products WHERE id = :id";
-      Hardware testHardware = con.createQuery(sql)
+      return con.createQuery(sql)
         .addParameter("id", id)
         .throwOnMappingFailure(false).executeAndFetchFirst(Hardware.class);
-      return testHardware;
     }
   }
 
   public static Hardware findProduct(String name) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT * FROM products WHERE name = :name";
-      Hardware testHardware = con.createQuery(sql)
+      return con.createQuery(sql)
         .addParameter("name", name)
         .throwOnMappingFailure(false).executeAndFetchFirst(Hardware.class);
-      return testHardware;
     }
   }
 }

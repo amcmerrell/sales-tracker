@@ -32,6 +32,15 @@ public abstract class Product {
     return inventory;
   }
 
+  public static String getType(int id) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT type FROM products WHERE id = :id";
+      return con.createQuery(sql)
+        .addParameter("id", id)
+        .throwOnMappingFailure(false).executeAndFetchFirst(String.class);
+    }
+  }
+
   public void save() {
     try(Connection con = DB.sql2o.open()) {
       String sql = "INSERT INTO products (name, description, price, type) VALUES (:name, :description, :price, :type)";
