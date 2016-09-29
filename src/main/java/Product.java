@@ -9,7 +9,7 @@ public abstract class Product {
   public int inventory;
   public String type;
 
-  public static final int MAX_INVENTORY = 50;
+  public static final int MAX_INVENTORY = 10;
   public static final int MIN_INVENTORY = 0;
 
   public String getName() {
@@ -41,14 +41,20 @@ public abstract class Product {
     }
   }
 
+  @Override
+  public String toString(){
+    return name;
+  }
+
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO products (name, description, price, type) VALUES (:name, :description, :price, :type)";
+      String sql = "INSERT INTO products (name, description, price, type, inventory) VALUES (:name, :description, :price, :type, :inventory)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("name", this.name)
         .addParameter("description", this.description)
         .addParameter("price", this.price)
         .addParameter("type", this.type)
+        .addParameter("inventory", this.inventory)
         .executeUpdate()
         .getKey();
     }
@@ -61,6 +67,27 @@ public abstract class Product {
         .addParameter("name", name)
         .addParameter("description", description)
         .addParameter("price", price)
+        .addParameter("id", this.id)
+        .throwOnMappingFailure(false)
+        .executeUpdate();
+    }
+  }
+
+  public void subtractInventory() {
+    this.inventory--;
+    updateInventory();
+  }
+
+  public void subtractInventory(int amount) {
+    this.inventory -= amount;
+    updateInventory();
+  }
+
+  public void updateInventory(){
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "UPDATE products SET inventory = :inventory WHERE id = :id";
+      con.createQuery(sql)
+        .addParameter("inventory", this.inventory)
         .addParameter("id", this.id)
         .throwOnMappingFailure(false)
         .executeUpdate();
@@ -88,11 +115,11 @@ public abstract class Product {
     }
   }
 
-  public void depleteInventory(){
+  public void depleteInventory(int amount){
     if (!(inStock())){
        throw new UnsupportedOperationException("We are out of stock");
      } else {
-    inventory--;
+       subtractInventory();
     }
   }
 

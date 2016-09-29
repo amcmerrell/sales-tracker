@@ -9,6 +9,7 @@ import static spark.Spark.*;
 public class App {
   public static void main(String[] args) {
     String layout = "templates/layout.vtl";
+    staticFileLocation("/public");
 
     get("/", (request, response) -> {
       Map<String, Object> model = new HashMap<String, Object>();
@@ -19,7 +20,8 @@ public class App {
 
     get("/admin", (request, response) -> {
       Map<String, Object> model = new HashMap<String, Object>();
-
+      model.put("clothing", Clothing.all());
+      model.put("hardware", Hardware.all());
       model.put("template", "templates/admin.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
@@ -34,9 +36,7 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-
     post("/products/new", (request, response) -> {
-      Map<String, Object> model = new HashMap<String, Object>();
       String productName = request.queryParams("product-name");
       String productDescription = request.queryParams("product-description");
       int productPrice = Integer.parseInt(request.queryParams("product-price"));
@@ -53,7 +53,6 @@ public class App {
     });
 
     post("/users/new", (request, response) -> {
-      Map<String, Object> model = new HashMap<String, Object>();
       String customerName = request.queryParams("customer-name");
       String customerEmail = request.queryParams("customer-email");
       String customerAddress = request.queryParams("customer-address");
@@ -64,7 +63,6 @@ public class App {
     });
 
     post("/users/login", (request, response) -> {
-      Map<String, Object> model = new HashMap<String, Object>();
       String userId = request.queryParams("customer-id");
       response.redirect("/users/" + userId + "");
       return null;
@@ -80,21 +78,39 @@ public class App {
     }, new VelocityTemplateEngine());
 
     post("/users/:customer_id/products/:product_id/purchase", (request, response) -> {
-      Map<String, Object> model = new HashMap<String, Object>();
       int customerId = Integer.parseInt(request.params("customer_id"));
       int productId = Integer.parseInt(request.params("product_id"));
       String type = Product.getType(productId);
       int salePrice;
+      Product someProduct = null;
       if (type.equals("hardware")) {
-        salePrice = Hardware.find(productId).getPrice();
+        someProduct = Hardware.find(productId);
+        salePrice = someProduct.getPrice();
       } else {
-        salePrice = Clothing.find(productId).getPrice();
+        someProduct = Clothing.find(productId);
+        salePrice = someProduct.getPrice();
       }
-      Transaction newTransaction = new Transaction(productId, customerId, salePrice);
+      try{
+        someProduct.depleteInventory(1);
+      }
+      catch(UnsupportedOperationException e){
+        request.session().attribute("message", e.getMessage());
+        response.redirect("/users/" + customerId + "/products/" + productId + "/outofstock");
+      }
+      Transaction newTransaction = new Transaction(productId, customerId);
       newTransaction.save();
       response.redirect("/users/" + customerId + "/products/" + productId + "/transactions/" + newTransaction.getId());
       return null;
     });
+
+    get("/users/:customer_id/products/:product_id/outofstock", (request, response) -> {
+      Map<String, Object> model = new HashMap<String, Object>();
+      int customerId = Integer.parseInt(request.params("customer_id"));
+      model.put("id", customerId);
+      model.put("message", request.session().attribute("message"));
+      model.put("template", "templates/out-of-stock.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
     get("/users/:customer_id/products/:product_id/transactions/:transaction_id", (request, response) -> {
       Map<String, Object> model = new HashMap<String, Object>();
@@ -110,5 +126,17 @@ public class App {
       model.put("template", "templates/transaction-receipt.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
+
+    post("/users/:customer_id/products/:product_id/delete", (request, response) -> {
+      int productId = Integer.parseInt(request.params("product_id"));
+      String type = Product.getType(productId);
+      if (type.equals("hardware")) {
+        Hardware.find(Integer.parseInt(request.params(":product_id"))).delete();
+      } else {
+        Clothing.find(Integer.parseInt(request.params(":product_id"))).delete();
+      }
+      response.redirect("/admin");
+      return null;
+    });
   }
 }

@@ -1,0 +1,16 @@
+#myLeft{
+  float: left;
+  width: 90%;
+}
+#myRight{
+  float: right;
+  width: 10%;
+}
+
+well {
+  clear: none;
+}
+
+.header {
+  overflow: auto;
+}

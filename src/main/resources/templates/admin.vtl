@@ -1,26 +1,56 @@
 <h2>Add a new product</h2>
-<form action='/products/new' method='post'>
-  <div class="form-group">
-    <label for="product-name">Enter a product to add:</label>
-    <input id="product-name" name="product-name" class="form-control" type="text">
-  </div>
-  <div class="form-group">
-    <label for="product-description">Enter the product description:</label>
-    <input id="product-description" name="product-description" class="form-control" type="text">
-  </div>
-  <div class="form-group">
-    <label for="product-price">Enter the price for your product:</label>
-    <input id="product-price" name="product-price" class="form-control" type="text">
-  </div>
-  <div class="form-group">
-    <label for="product-type">Which category should this product be added to?</label>
-    <select id='product-type' name='product-type' type='text' class="form-control">
-      <option value="hardware">Hardware</option>
-      <option value="clothing">Clothing</option>
-    </select>
-  </div>
+<div class="row">
+  <div class="col-md-6">
+    <form action='/products/new' method='post'>
+      <div class="form-group">
+        <label for="product-name">Enter a product to add:</label>
+        <input id="product-name" name="product-name" class="form-control" type="text">
+      </div>
+      <div class="form-group">
+        <label for="product-description">Enter the product description:</label>
+        <input id="product-description" name="product-description" class="form-control" type="text">
+      </div>
+      <div class="form-group">
+        <label for="product-price">Enter the price for your product:</label>
+        <input id="product-price" name="product-price" class="form-control" type="text">
+      </div>
+      <div class="form-group">
+        <label for="product-type">Which category should this product be added to?</label>
+        <select id='product-type' name='product-type' type='text' class="form-control">
+          <option value="hardware">Hardware</option>
+          <option value="clothing">Clothing</option>
+        </select>
+      </div>
 
-  <button type="submit" class="btn">Add product</button>
-</form>
+      <button type="submit" class="btn">Add product</button>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Clothing Products</h4>
+      <div>
+        #foreach($item in $clothing)
+          <h4>$item.getName()</h4>
+          <p><strong>Description: </strong>$item.getDescription()</strong></p>
+          <p><strong>Price: </strong>$item.getPrice()</strong></p>
+          <form action="/users/$customer.getId()/products/$item.getId()/delete" method="post">
+            <button type="submit" class="btn btn-danger">Delete Item</button>
+          </form>
+        #end
+      </div>
+      <h4>Hardware Products</h4>
+      <div>
+        #foreach($item in $hardware)
+          <h4>$item.getName()</h4>
+          <p><strong>Description: </strong>$item.getDescription()</strong></p>
+          <p><strong>Price: </strong>$item.getPrice()</strong></p>
+          <form action="/users/$customer.getId()/products/$item.getId()/delete" method="post">
+            <button type="submit" class="btn btn-danger">Delete Item</button>
+          </form>
+        #end
+      </div>
+    </div>
+  </div>
+</div>
 <br>
 <a href="admin/reports" class="btn btn-primary">View your reports</a>

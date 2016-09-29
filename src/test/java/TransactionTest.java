@@ -15,7 +15,7 @@ public class TransactionTest {
     productOne.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     assertTrue(transactionOne instanceof Transaction);
   }
@@ -26,7 +26,7 @@ public class TransactionTest {
     productOne.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     assertEquals(customerOne.getId(), transactionOne.getCustomerId());
   }
@@ -37,7 +37,7 @@ public class TransactionTest {
     productOne.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     assertEquals(productOne.getId(), transactionOne.getProductId());
   }
@@ -48,7 +48,7 @@ public class TransactionTest {
     productOne.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     assertEquals(productOne.getPrice(), transactionOne.getSalePrice());
   }
@@ -59,7 +59,7 @@ public class TransactionTest {
     productOne.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     assertEquals(true, Transaction.all().get(0).equals(transactionOne));
   }
@@ -68,11 +68,15 @@ public class TransactionTest {
   public void all_returnsAllClothings_true () {
     Clothing productOne = new Clothing("T-shirt", "100% cotton blend", 15);
     productOne.save();
+    Clothing productTwo = new Clothing("Expensive T-shirt", "fancy", 60);
+    productTwo.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Customer customerTwo = new Customer("Yusuf", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+    customerTwo.save();
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
-    Transaction transactionTwo = new Transaction(20, 21, 15);
+    Transaction transactionTwo = new Transaction(productTwo.getId(), customerTwo.getId());
     transactionTwo.save();
     assertEquals(true, Transaction.all().get(0).equals(transactionOne));
     assertEquals(true, Transaction.all().get(1).equals(transactionTwo));
@@ -82,27 +86,41 @@ public class TransactionTest {
   public void equals_recognizesSameValues_true () {
     Clothing productOne = new Clothing("T-shirt", "100% cotton blend", 15);
     productOne.save();
+    Clothing productTwo = new Clothing("Expensive T-shirt", "fancy", 60);
+    productTwo.save();
     Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
     customerOne.save();
-    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
-    Transaction transactionTwo = new Transaction(productOne.getId(), customerOne.getId(), productOne.getPrice());
+    Transaction transactionTwo = new Transaction(productOne.getId(), customerOne.getId());
     transactionTwo.save();
     assertEquals(true, transactionOne.equals(transactionTwo));
   }
 
   @Test
   public void find_returnsClothingWithSameId_true() {
-    Transaction transactionOne = new Transaction(1, 2, 15);
+    Clothing productOne = new Clothing("T-shirt", "100% cotton blend", 15);
+    productOne.save();
+    Clothing productTwo = new Clothing("Expensive T-shirt", "fancy", 60);
+    productTwo.save();
+    Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+    customerOne.save();
+    Customer customerTwo = new Customer("Yusuf", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+    customerTwo.save();
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
-    Transaction transactionTwo = new Transaction(2, 1, 20);
+    Transaction transactionTwo = new Transaction(productTwo.getId(), customerTwo.getId());
     transactionTwo.save();
     assertEquals(Transaction.find(transactionTwo.getId()), transactionTwo);
   }
 
   @Test
   public void delete_deletesTransaction_null() {
-    Transaction transactionOne = new Transaction(1, 2, 20);
+    Clothing productOne = new Clothing("T-shirt", "100% cotton blend", 15);
+    productOne.save();
+    Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+    customerOne.save();
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     int deletedId = transactionOne.getId();
     transactionOne.delete();
@@ -111,7 +129,11 @@ public class TransactionTest {
 
   @Test
   public void findMonthlyTransactions_returnsCorrectTransactions_true() {
-    Transaction transactionOne = new Transaction(1, 2, 25);
+    Clothing productOne = new Clothing("T-shirt", "100% cotton blend", 15);
+    productOne.save();
+    Customer customerOne = new Customer("Andrew", "andrew@email.com", "2270 Portland Pl. Portland, OR 97210");
+    customerOne.save();
+    Transaction transactionOne = new Transaction(productOne.getId(), customerOne.getId());
     transactionOne.save();
     assertTrue(Transaction.findMonthlyTransactions().contains(transactionOne));
   }
@@ -122,9 +144,9 @@ public class TransactionTest {
     productOne.save();
     Clothing productTwo = new Clothing("Expensive T-shirt", "fancy", 60);
     productTwo.save();
-    Transaction transactionOne = new Transaction(productOne.getId(),2, productOne.getPrice());
+    Transaction transactionOne = new Transaction(productOne.getId(),2);
     transactionOne.save();
-    Transaction transactionTwo = new Transaction(productTwo.getId(),2, productTwo.getPrice());
+    Transaction transactionTwo = new Transaction(productTwo.getId(),2);
     transactionTwo.save();
     assertEquals((Integer) 75, (Integer) Transaction.sumMonthlySales());
   }

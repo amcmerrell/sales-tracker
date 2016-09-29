@@ -10,6 +10,7 @@ public class Transaction {
   int salePrice;
   int productId;
   int customerId;
+  String productName;
 
   public static final int MONTHLY_SALES_GOAL = 10;
   public static final int QRTRLY_SALES_GOAL = 25;
@@ -17,9 +18,19 @@ public class Transaction {
   public static final long MONTH = 2592000000l;
 
 
-  public Transaction(int productId, int customerId, int salePrice) {
+  public Transaction(int productId, int customerId) {
     this.productId = productId;
-    this.salePrice = salePrice;
+    String type = Product.getType(productId);
+    Product product = null;
+    if(type.equals("hardware")){
+      product = Hardware.find(productId);
+      this.productName = product.getName();
+      this.salePrice = product.getPrice();
+    }else{
+      product = Clothing.find(productId);
+      this.productName = product.getName();
+      this.salePrice = product.getPrice();
+    }
     this.customerId = customerId;
   }
 
@@ -43,6 +54,10 @@ public class Transaction {
     return date;
   }
 
+  public String getProductName(){
+    return productName;
+  }
+
   public String getFormattedDate(){
     SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMMM dd yyyy hh:mm a");
     return formatter.format(date);
@@ -50,11 +65,12 @@ public class Transaction {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO transactions (customerId, productId, date, salePrice) VALUES (:customerId, :productId, now(), :salePrice)";
+      String sql = "INSERT INTO transactions (customerId, productId, date, salePrice, productName) VALUES (:customerId, :productId, now(), :salePrice, :productName)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("customerId", this.customerId)
         .addParameter("productId", this.productId)
         .addParameter("salePrice", this.salePrice)
+        .addParameter("productName", this.productName)
         .executeUpdate()
         .getKey();
     }

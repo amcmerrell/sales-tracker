@@ -89,24 +89,24 @@ public class HardwareTest {
     assertEquals(null, Hardware.find(deletedId));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-    public void inventory_throwsExceptionIfInventoryLevelIsAtMinValue(){
-      Hardware testHardware = new Hardware("wrench", "steel", 15);
-      for(int i = Hardware.MIN_INVENTORY; i <= (Hardware.MAX_INVENTORY); i++){
-        testHardware.depleteInventory();
-      }
-    }
-
-  @Test
-  public void product_inventoryCannotGoBeneathMinValue(){
-    Hardware testHardware = new Hardware("wrench", "steel", 15);
-    for(int i = Hardware.MAX_INVENTORY; i >= (Hardware.MIN_INVENTORY); i--){
-      try {
-        testHardware.depleteInventory();
-      } catch (UnsupportedOperationException exception){ }
-    }
-    assertEquals(testHardware.getInventory(), Hardware.MIN_INVENTORY);
-  }
+  // @Test(expected = UnsupportedOperationException.class)
+  //   public void inventory_throwsExceptionIfInventoryLevelIsAtMinValue(){
+  //     Hardware testHardware = new Hardware("wrench", "steel", 15);
+  //     for(int i = Hardware.MIN_INVENTORY; i <= (Hardware.MAX_INVENTORY); i++){
+  //       testHardware.depleteInventory();
+  //     }
+  //   }
+  //
+  // @Test
+  // public void product_inventoryCannotGoBeneathMinValue(){
+  //   Hardware testHardware = new Hardware("wrench", "steel", 15);
+  //   for(int i = Hardware.MAX_INVENTORY; i >= (Hardware.MIN_INVENTORY); i--){
+  //     try {
+  //       testHardware.depleteInventory();
+  //     } catch (UnsupportedOperationException exception){ }
+  //   }
+  //   assertEquals(testHardware.getInventory(), Hardware.MIN_INVENTORY);
+  // }
 
   @Test
   public void getType_getsType(){
